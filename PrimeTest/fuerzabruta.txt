@@ -1,0 +1,88 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string>
+#include <time.h>
+#include <NTL/ZZ.h>
+#include <cstring>
+#include <sstream>
+
+
+using namespace std;
+using namespace NTL;
+
+
+ZZ modulo (ZZ a, ZZ n)
+{
+  ZZ r=a-n*(a/n);
+  ZZ q=a/n;
+  if (r<0)
+  {
+    q=q-1;
+    r=a-(n*q);
+  }
+  return r;
+}
+
+ZZ mcd(ZZ mcd1,ZZ mcd2){
+  ZZ residuo;
+  residuo=0;
+  ZZ aux;
+  ZZ var;
+  while (mcd2>0)
+  {
+  residuo=modulo(mcd1,mcd2);
+  var=mcd1/mcd2;
+  aux=mcd2;
+  mcd2=residuo;
+  mcd1=aux;
+  }
+  return mcd1;
+}
+
+
+
+ZZ potencia (ZZ base, ZZ exponente)
+{
+    ZZ respuesta;
+    respuesta=base;
+    for(int x=0; x<exponente-1; x++)
+    {
+        respuesta=respuesta*base;
+    }
+    return respuesta;
+}
+
+bool PRIMECHECK (ZZ a){
+  ZZ respuesta;
+  respuesta=0;
+  ZZ x;
+  x=2;
+
+    while(respuesta!=1)
+  {
+    for(; x<a;x++)
+    {
+      if(mcd(a,x)!=1 )
+      {
+        x=2;
+        respuesta=0;
+        return false ;
+      }
+      if(x==a-1)
+      {
+        respuesta=1;
+      }
+    }
+  }
+  return true;
+}
+//si el programa devuelve 0, no es primo, si devuelve 1, es primo
+int main()
+{
+    ZZ numero;
+    numero=5;
+    cout<<PRIMECHECK(numero)<<endl;
+
+
+}
