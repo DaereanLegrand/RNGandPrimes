@@ -60,12 +60,13 @@ vector<ZZ>X;
 ZZ CL(ZZ semilla, ZZ a , ZZ c , ZZ m ,ZZ bits){
     ZZ random; random=semilla*get_coordinate();
     ZZ x0;
+    int i=1;	
     X.push_back(random);
     while (mcdZZ(c, m) != 1)
     {
         c++;
     }
-    for (int i=1;i<20; i++){
+    for (i=1;i<20; i++){
     X.push_back(ZZ(0));
 	X[i] = X[i-1] * a + c;
 	//X[i] = X[i-1] * X[i-1];
