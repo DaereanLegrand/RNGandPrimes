@@ -65,7 +65,7 @@ ZZ CL(ZZ semilla, ZZ a , ZZ c , ZZ m ,ZZ bits){
     {
         c++;
     }
-    for (int i=1;20; i++){
+    for (int i=1;i<20; i++){
     X.push_back(ZZ(0));
 	X[i] = X[i-1] * a + c;
 	//X[i] = X[i-1] * X[i-1];
@@ -87,7 +87,7 @@ ZZ CL(ZZ semilla, ZZ a , ZZ c , ZZ m ,ZZ bits){
         x0=X[i];
 	}
     }
-	return semilla;
+	return X[i];
 }
 
 Getrand(ZZ bits){
