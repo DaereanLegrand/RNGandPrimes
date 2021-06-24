@@ -1,0 +1,149 @@
+#include <iostream>
+#include <cstdlib>
+#include<time.h>
+#include <vector>
+#include <NTL/ZZ.h>
+#include <Windows.h>
+using namespace NTL;
+using namespace std;
+
+ZZ get_coordinate()
+        {
+            POINT P;
+            GetCursorPos(&P);
+
+            ZZ seed = conv<ZZ>(P.x * P.y);
+            return seed;
+        }
+
+
+ZZ moduloZZ(ZZ a, ZZ b)
+{
+    ZZ r;
+    r = a - b * (a / b);
+    r = r + (r < 0) * b;
+    return r;
+}
+
+ZZ mcdZZ(ZZ a, ZZ b)
+{
+    ZZ res = a - ((a / b) * b);
+    while (res != 0)
+    {
+        a = b;
+        b = res;
+        res = a - ((a / b) * b);
+    }
+    return b;
+}
+
+ZZ rtl(ZZ b, ZZ e)
+{
+    ZZ A = conv<ZZ>("1");
+    ZZ S = b;
+
+    while (e != 0)
+    {
+        if (moduloZZ(e,ZZ(2)) == 1)
+        {
+            A =A * S;
+        }
+        e = e >> 1;
+        if (e != 0) S = S * S;
+    }
+    return A;
+}
+
+ZZ moduloZZ2(ZZ a)
+{
+    ZZ r = a - ((a >> 1) << 1);
+    r = r + ((r < 0) << 1);
+    return r;
+}
+
+ZZ powerZZ(ZZ b, ZZ e, ZZ m)
+{
+    ZZ A = conv<ZZ>("1");
+    ZZ S = b;
+
+    while (e != 0)
+    {
+        if (moduloZZ2(e) == 1)
+        {
+            A = moduloZZ(A * S, m);
+        }
+        e = e >> 1;
+        if (e != 0) S = S * S;
+    }
+    return A;
+}
+
+bool isPrime (ZZ x)
+{
+    ZZ res;
+    ZZ y;
+    ZZ gcd;
+
+    if(moduloZZ2(x)==0){
+        return false;
+    }
+    srand(time(NULL));
+    y=RandomBnd(x);
+    //y=ZZ(2);
+    gcd=mcdZZ(x,y);
+    while(gcd!=1){
+        y=RandomBnd(x);
+        //y=ZZ(2);
+        gcd=mcdZZ(x,y);
+    }
+    res=powerZZ(y,(x-1),x);
+    if(res==1){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+vector<ZZ>X;
+ZZ CL(ZZ semilla, ZZ a , ZZ c , ZZ m ){
+    ZZ random; random=semilla*get_coordinate();
+    ZZ x0;
+    int i=1;
+    X.push_back(random);
+    while (mcdZZ(c, m) != 1)
+    {
+        c++;
+    }
+    for (i=1;; i++){
+    X.push_back(ZZ(0));
+	X[i] = X[i-1] * a + c;
+	if (X[i] > m){
+		X[i] = moduloZZ(X[i], m);
+    }
+    while(X[i]<m>>1){
+        X[i]=X[i]<<1;
+    }
+
+    std::cout<<"\n NUMBER: "<<X[i];
+
+    if (isPrime(X[i])==true){
+        return X[i];
+    }
+    }
+}
+
+ZZ Getrand(ZZ bits){
+    ZZ a,c,m;
+    a=rtl(ZZ(3),bits/2);
+    m=rtl(ZZ(2),bits)-1;
+    c=1;
+    ZZ semilla=ZZ(time(NULL));
+    return CL(semilla,a,c,m);
+}
+
+int main()
+{
+    Getrand(ZZ(1024));
+
+}
