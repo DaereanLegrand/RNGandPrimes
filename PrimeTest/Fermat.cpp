@@ -62,7 +62,10 @@ bool fermat(ZZ x){
     ZZ res;
     ZZ y;
     ZZ gcd;
-
+    
+    if(x%2==0){
+        return false;
+    }
     srand(time(NULL));
     y=RandomBnd(x);
     //y=ZZ(2);
@@ -72,7 +75,6 @@ bool fermat(ZZ x){
         //y=ZZ(2);
         gcd=mcd(x,y);
     }
-    cout<<y<<endl;
     res=rtlexponentiation(y,(x-1),x);
     if(res==1){
         return true;
